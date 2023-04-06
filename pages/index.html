@@ -5,10 +5,51 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Jquery Project</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet'  href='../jquery/jquery.mobile-1.4.5.css'>
-    <script src='../jquery/jquery.mobile-1.4.5.js'></script>
+    
+   	
+
+<link rel="stylesheet" href="../jquery/jquery.mobile-1.4.5.css" />
+<script src="../jquery/jquery.js"></script>
+<script src="../jquery/jquery.mobile-1.4.5.js"></script>
+   
 </head>
 <body>
+    <!-- Header -->
+    <div data-role="header" data-position="fixed" data-theme="a">
+        <h3>Election App</h3>
+        <a  id="menuButton" data-icon="grid" data-iconpos="notext" class="ui-btn-right ui-btn-icon-notext ui-icon-grid">Menu</a>
+
     
+    </div>
+
+    <!-- Content -->
+    
+    <div role="main" class="ui-content">
+        <img src="../images/12340.jpg" alt="Index image" style="display: block;margin:auto;width:80%"/>
+    </div>
+
+    <!-- Footer -->
+    <div data-role="footer" data-position="fixed" data-theme="a">
+        <div class="ui-bar">
+            <p style="text-align: center;"> &copy; Jquery mobile designs, 2023</p>
+        </div>
+    </div>
+
+<!-- Menu panel -->
+    <div data-role="panel" id="menuPanel" data-display="overlay" data-theme="a" data-dismissible="false" data-position-fixed="true" data-transition="fade">
+        <ul data-role="listview">
+            <li>Home</li>
+            <li>About</li>
+        </ul>
+
+    </div>
+ 
 </body>
+<script>
+    $(document).ready(function() {
+        $("#menuButton").on("click", function() {
+            $("#menuPanel").panel("open");
+        });
+    });
+</script>
 </html>
