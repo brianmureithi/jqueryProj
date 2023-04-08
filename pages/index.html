@@ -1,14 +1,242 @@
 <!DOCTYPE html>
-<html>
+<html >
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Jquery Project</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet'  href='../jquery/jquery.mobile-1.4.5.css'>
-    <script src='../jquery/jquery.mobile-1.4.5.js'></script>
-</head>
-<body>
+    <link rel="shortcut icon" href="../images/bitcoin.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../jquery/jquery.mobile-1.4.5.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../jquery/jquery.js"></script>
+    <script src="../jquery/main.js"></script>
+    <script src="../jquery/jquery.mobile-1.4.5.js"></script>
+    <script>
+        $(document).ready(function() {
+            /* trigger page create */
+            $(document).on("pagecontainershow", function(event, ui) {
+                var currentPage = $(':mobile-pagecontainer').pagecontainer('getActivePage');
+                console.log(currentPage.attr('id'))
+                if (currentPage.attr('id') == 'home') {
+                    $(document).trigger('home');
+                } else if (currentPage.attr('id') == 'about') {
+                    $(document).trigger('about');
+                } else if (currentPage.attr('id') == 'form') {
+                    $(document).trigger('form');
+                }
+            });
+            /* toggle and swipe panel */
+            $(document).on("pagecreate", function() {
+    $(document).on("swipeleft swiperight", function(e) {
+        if ($(".ui-page-active").jqmData("panel") !== "open") {
+            if (e.type === "swiperight") {
+                $("#menuPanel").panel("open");
+            } else if (e.type === "swipeleft") {
+                $("#menuPanel").panel("close");
+            }
+        }
+    });
+
+
+    $(document).on("click", "#menuButton, #menuButton1, #menuButton2", function() {
+        $("#menuPanel").panel();
+        $("#menuPanel").panel("toggle");
+    });
+
+    /* Form validation and submit */
+    let form = $('form')
+
+    let formDataArray=[]//Initialize
+    form.submit((e)=>{
+        e.preventDefault()
+
+        let first_name=$('#first_name')
+        let last_name=$('#last_name')
+        let state=$('#state')
+        let email=$('#email')
+        let age=$('#age')
+/* Validate age */
+        let ageValue=parseInt(age.val())
+        if(isNaN(ageValue) || ageValue<0 || ageValue >120){
+            alert('Please enter a valid age between 0 and 120')
+        }
+        let formData={
+            firstName:first_name.val(),
+            lastName:last_name.val(),
+            email:email.val(),
+            age:age.val(),
+            state:state.val()
+        }
+        /* Add the item to array */
+        formDataArray.push(formData);
+
+        localStorage.setItem('formDataArray', JSON.stringify(formDataArray))
+        /* Clear the form */
+        form[0].reset()
+        /* alert user */
+
+        alert('Form submitted successfully')
+        return false
+    })
+});
+
+        })
+    </script>
     
-</body>
+
+  
+
+</head>
+
+<body>
+    <!-- Panel -->
+       <!-- Menu panel -->
+       <div data-role="panel" id="menuPanel" data-display="overlay" data-theme="a" data-dismissible="true" style="opacity: 0.9;" data-position-fixed="true" data-transition="fade">
+        <div class="logo-section">
+          <img src="../images/bitcoin.png" alt="Logo" style="height: 80px; margin-bottom: 6rem;">
+          <div class="nav-links">
+            <ul>
+              <li><a href="#about" data-transition="flow"> About Me <span><i class="fa fa-user"></i></span></a></li>
+              <li><a href="#form" data-transition="flow"> Form <span><i class="fa fa-file-text-o"></i></span></a></li>
+              <li><a href="#" data-transition="flow"> Form Data <span><i class="fa fa-table"></i></span></a></li>
+              <li><a href="#" data-transition="flow"> Api Data <span><i class="fa fa-database"></i></span></a></li>
+              <li><a href="#" data-transition="flow"> Student Choice <span><i class="fa fa-plus-square-o"></i></span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    <!-- Header -->
+    <div data-role="page" data-dom-cache="true" id="home">
+
+  
+    <div data-role="header" class="header" data-position="fixed" data-theme="a">
+        <a href="#about"  data-transition="flow" style="background: transparent; box-shadow: none; border: none; "><img src="../images/bitcoin.png" alt="Logo" style="height: 28px;"></a>
+        <h3>Census App</h3>
+        <a  data-icon="grid" id="menuButton" data-iconpos="notext" class=" ui-btn-right ui-btn-icon-notext ui-icon-grid"  data-display="push">Menu</a>
+    </div>
+
+    <!-- Content -->
+    <div role="main" class="ui-content" id="content">
+        <div class="image-container">
+            <div class="welcome-text">
+                <h1>Welcome</h1>
+                <h2>Home</h2>
+            </div>
+            <img src="../images/12340.jpg" alt="Index image" class="image-b"/>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div data-role="footer" data-position="fixed" data-theme="a">
+        <div class="ui-bar">
+            <p style="text-align: center;"> &copy; Jquery mobile design 2023</p>
+        </div>
+    </div>   
+    </div>
+
+    <!-- About me -->
+    <div data-role="page" data-dom-cache="true" id="about">
+        <!-- Header -->
+        <div data-role="header" class="header" data-position="fixed" data-theme="a">
+            <a href="#home" data-transition="flow" style="background: transparent; box-shadow: none; border: none; "><img src="../images/bitcoin.png" alt="Logo" style="height: 28px;"></a>
+           <a href="#home" data-transition="flow" >COIT20269-Ass1</a>
+            <a data-icon="grid" data-display="push" id="menuButton1" data-iconpos="notext" class="ui-btn-right ui-btn-icon-notext ui-icon-grid ">Menu</a>
+        </div>
+        
+        <!-- Content -->
+        <div role="main" class="ui-content" id="content">
+            <h1 class="" style="text-align:center">Me</h1>
+            <div class="about-container">
+                <div class="about-text">
+                    <h1 >Web design</h1>
+                    <p> The web is important because it connects people globally, facilitates information exchange, and enables online business, education, and entertainment.</p>
+                  
+                </div>
+                <img src="../images/about.jpg" alt="Index image" class="image-c"/>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div data-role="footer" data-position="fixed" data-theme="a">
+            <div class="ui-bar">
+                <p style="text-align: center;"> &copy; Jquery mobile design 2023</p>
+            </div>
+        </div>
+            </div>  
+            
+            <!-- Form -->
+
+            <div data-role="page" data-dom-cache="true" id="form">
+                <!-- Header -->
+          <div data-role="header" class="header" data-position="fixed" data-theme="a">
+              <a href="#about"  data-transition="flow" style="background: transparent; box-shadow: none; border: none; "><img src="../images/bitcoin.png" alt="Logo" style="height: 28px;"></a>
+              <a href="#home" data-transition="flow" >COIT20269-Ass-1</a>
+              <a  data-icon="grid" id="menuButton2"  data-display="push"  data-iconpos="notext" class=" ui-btn-right ui-btn-icon-notext ui-icon-grid">Menu</a>
+          </div>
+      
+          <!-- Content -->
+          <div role="main" class="ui-content" id="content">
+              <div>
+              <h1 class="" style="text-align:center;font-size: 1.5rem;">CENSUS 2023</h1>
+              </div>
+              <div>
+                  <form>
+                      <div>
+                          <label for="first_name">First name</label>
+                          <input type="text" placeholder="First name" name="first_name" id="first_name" value="" required> 
+                      </div>
+                      <div>
+                          <label for="last_name-basic">Last name</label>
+                          <input type="text" name="last_name" id="last_name" placeholder='Enter last name'value="" required> 
+                      </div>
+                      <div>
+                           
+                      <label for="state" class="select">Chooose a state</label>
+                      <select name="state" id="state">
+                          <option value="New South Wales">New South Wales</option>
+                          <option value="Victoria">Victoria</option>
+                          <option value="Queensland">Queensland</option>
+                          <option value="Western Australia">Western Australia</option>
+                          <option value="Tasmania">Tasmania</option>
+                          <option value="Souh Australia">South Australia</option>
+                      </select>
+                      </div>
+                      <div>
+                          <label for="email">Email</label>
+                          <input type="email" placeholder="Enter email e.g name@lastname.com" required name="email" id="email" value=""> 
+                      </div>
+      
+                      <div>
+                      <label for="age">Age</label>
+                      <input type="number" name="age" pattern="[0-9]*" id="age" value="" required>
+                      </div>
+                      <div>
+           <button type="submit" class="ui-shadow ui-btn ui-corner-all">Submit </button>
+                      </div>
+                      <div>
+          <button type="reset" class="ui-shadow ui-btn ui-corner-all">Clear </button>
+                      </div>
+                     
+      
+                  </form>
+              </div>
+          </div>
+      
+          <!-- Footer -->
+          <div data-role="footer" data-position="fixed" data-theme="a">
+              <div class="ui-bar">
+                  <p style="text-align: center;"> &copy; Jquery mobile design 2023</p>
+              </div>
+          </div>
+                </div>
+       
+
+   
+    </body>
+
+      
+ 
+    
 </html>
