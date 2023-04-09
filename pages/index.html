@@ -14,40 +14,73 @@
     <script src="../jquery/jquery.mobile-1.4.5.js"></script>
     <script>
         $(document).ready(function() {
+            //Initialize array
+            let formDataArray = JSON.parse(localStorage.getItem("CensusData")) || [];  
             /* trigger page create */
-            $(document).on("pagecontainershow", function(event, ui) {
-                var currentPage = $(':mobile-pagecontainer').pagecontainer('getActivePage');
-                console.log(currentPage.attr('id'))
-                if (currentPage.attr('id') == 'home') {
-                    $(document).trigger('home');
-                } else if (currentPage.attr('id') == 'about') {
-                    $(document).trigger('about');
-                } else if (currentPage.attr('id') == 'form') {
-                    $(document).trigger('form');
-                }
+            let hash=window.location.hash
+            if(window.location.hash == ""){
+                window.location.hash= "#home";
+            }
+            
+         /*    if (hash === "#home") {
+                console.log(sessionStorage.getItem("loadedBefore"))
+  if (sessionStorage.getItem("loadedBefore") == 'false' || null) {
+    sessionStorage.setItem("loadedBefore", true);
+    sessionStorage.setItem("hasReloaded", true);
+
+    if (sessionStorage.getItem("hasReloaded") === "true") {
+      location.reload(); 
+      sessionStorage.setItem("loadedBefore", false);
+    }
+  }
+}
+sessionStorage.setItem("hasReloaded", false); */
+
+
+          
+            $(document).on("pagecreate", function(event, ui) {
+                let currentPage = $(':mobile-pagecontainer').pagecontainer('getActivePage');
+             
+
+                  // check the URL hash value
+                   
+                    let hash = window.location.hash;
+                    if (hash === '#home' || currentPage.attr('id') == 'home') {
+                
+                        $(document).trigger('home');
+                    } else if (hash === '#about' || currentPage.attr('id') == 'about') {
+                        $(document).trigger('about');
+                    } else if (hash === '#form' || currentPage.attr('id') == 'form') {
+                        $(document).trigger('form');
+                    }
             });
             /* toggle and swipe panel */
             $(document).on("pagecreate", function() {
+                $(document).on("click", "#menuButton, #menuButton1, #menuButton2", function() {
+        $("#menuPanel").panel();
+        $("#menuPanel").panel("toggle");
+    });
     $(document).on("swipeleft swiperight", function(e) {
         if ($(".ui-page-active").jqmData("panel") !== "open") {
             if (e.type === "swiperight") {
+                /* iniialize panel */
+                $("#menuPanel").panel();
                 $("#menuPanel").panel("open");
             } else if (e.type === "swipeleft") {
+                $("#menuPanel").panel();
                 $("#menuPanel").panel("close");
             }
         }
     });
+    /* Ensure the form is reset on navigation */
+    $("form")[0].reset();
 
-
-    $(document).on("click", "#menuButton, #menuButton1, #menuButton2", function() {
-        $("#menuPanel").panel();
-        $("#menuPanel").panel("toggle");
-    });
+ 
 
     /* Form validation and submit */
     let form = $('form')
 
-    let formDataArray=[]//Initialize
+
     form.submit((e)=>{
         e.preventDefault()
 
@@ -56,22 +89,33 @@
         let state=$('#state')
         let email=$('#email')
         let age=$('#age')
+         // Trim input values
+    let firstNameValue = $.trim(first_name.val());
+    let lastNameValue = $.trim(last_name.val());
+    let stateValue = $.trim(state.val());
+    let emailValue = $.trim(email.val());
+    let ageValue = parseInt($.trim(age.val()));
+      // Check if any field is empty
+      if (firstNameValue === '' || lastNameValue === '' || stateValue === '' || emailValue === '' || ageValue === '') {
+        alert('Please fill all the required fields');
+        return false;
+    }
+
 /* Validate age */
-        let ageValue=parseInt(age.val())
-        if(isNaN(ageValue) || ageValue<0 || ageValue >120){
+        if(isNaN(ageValue) || ageValue < 0 || ageValue > 120){
             alert('Please enter a valid age between 0 and 120')
         }
         let formData={
-            firstName:first_name.val(),
-            lastName:last_name.val(),
-            email:email.val(),
-            age:age.val(),
-            state:state.val()
+            firstName:firstNameValue,
+            lastName:lastNameValue,
+            email:emailValue,
+            age:ageValue,
+            state:stateValue
         }
         /* Add the item to array */
         formDataArray.push(formData);
 
-        localStorage.setItem('formDataArray', JSON.stringify(formDataArray))
+        localStorage.setItem('CensusData', JSON.stringify(formDataArray))
         /* Clear the form */
         form[0].reset()
         /* alert user */
@@ -81,6 +125,65 @@
     })
 });
 
+/* Ensure the data is loaded when the page is created */
+$(document).on("pagecreate", "#formData", function() {
+ 
+  if (formDataArray !== null) {
+    let table = $('#table-column-toggle tbody');
+    $.each(formDataArray, function(index, person) {
+      let row = $("<tr>");
+      $("<td>").text(person.firstName).appendTo(row);
+      $("<td>").text(person.lastName).appendTo(row);
+      $("<td>").text(person.email).appendTo(row);
+      $("<td>").text(person.state).appendTo(row);
+      $("<td>").text(person.age).appendTo(row);
+      table.append(row);
+    });
+  }
+});
+
+/* Api scripts */
+
+ // Set up event listener for the Fetch Data button
+ $('#fetchDataBtn').css({"background":"brown","color":"white"})
+ $('#fetchDataBtn').hover(
+    function() {
+        $(this).css({"background":"red","color":"white"});
+    }, 
+    function() {
+        $(this).css({"background":"brown", "color":"white"});
+    }
+);
+ $('#fetchDataBtn').click(function() {
+    // Make a request to the Random User API
+    $.ajax({
+      url: 'https://randomuser.me/api/',
+      dataType: 'json',
+      success: function(data) {
+        // Extract the relevant data from the response
+        var user = data.results[0];
+        var firstName = user.name.first;
+        var lastName = user.name.last;
+        var imageSrc = user.picture.large;
+
+        // Create a new div to hold the data
+        var newDiv = $('<div>').addClass('ui-body ui-body-a ui-corner-all');
+
+        // Add the image
+        var image = $('<img>').attr('src', imageSrc);
+        newDiv.append(image);
+
+        // Add the name
+        var name = $('<h2>').text(firstName + ' ' + lastName);
+        newDiv.append(name);
+
+        // Add the new div to the results div
+        $('#apiResults').append(newDiv);
+      }
+    });
+  });
+
+
         })
     </script>
     
@@ -89,19 +192,19 @@
 
 </head>
 
-<body>
+<body data-default-page="home">
     <!-- Panel -->
        <!-- Menu panel -->
        <div data-role="panel" id="menuPanel" data-display="overlay" data-theme="a" data-dismissible="true" style="opacity: 0.9;" data-position-fixed="true" data-transition="fade">
-        <div class="logo-section">
-          <img src="../images/bitcoin.png" alt="Logo" style="height: 80px; margin-bottom: 6rem;">
-          <div class="nav-links">
+        <div class="">
+          <a href="#home" data-transition="flow"><img src="../images/bitcoin.png" alt="Logo" style="height: 80px; margin-bottom: 6rem;"></a>
+          <div class="">
             <ul>
               <li><a href="#about" data-transition="flow"> About Me <span><i class="fa fa-user"></i></span></a></li>
               <li><a href="#form" data-transition="flow"> Form <span><i class="fa fa-file-text-o"></i></span></a></li>
-              <li><a href="#" data-transition="flow"> Form Data <span><i class="fa fa-table"></i></span></a></li>
-              <li><a href="#" data-transition="flow"> Api Data <span><i class="fa fa-database"></i></span></a></li>
-              <li><a href="#" data-transition="flow"> Student Choice <span><i class="fa fa-plus-square-o"></i></span></a></li>
+              <li><a href="#formData" data-transition="flow"> Form Data <span><i class="fa fa-table"></i></span></a></li>
+              <li><a href="#apiData" data-transition="flow"> Api Data <span><i class="fa fa-database"></i></span></a></li>
+              <li><a href="#studentChoice" data-transition="flow"> Student Choice <span><i class="fa fa-plus-square-o"></i></span></a></li>
             </ul>
           </div>
         </div>
@@ -185,16 +288,17 @@
                   <form>
                       <div>
                           <label for="first_name">First name</label>
-                          <input type="text" placeholder="First name" name="first_name" id="first_name" value="" required> 
+                          <input type="text" placeholder="First name" name="first_name" id="first_name" value="" > 
                       </div>
                       <div>
                           <label for="last_name-basic">Last name</label>
-                          <input type="text" name="last_name" id="last_name" placeholder='Enter last name'value="" required> 
+                          <input type="text" name="last_name" id="last_name" placeholder='Enter last name'value="" > 
                       </div>
                       <div>
                            
                       <label for="state" class="select">Chooose a state</label>
                       <select name="state" id="state">
+                          <option value="">Enter your state</option>
                           <option value="New South Wales">New South Wales</option>
                           <option value="Victoria">Victoria</option>
                           <option value="Queensland">Queensland</option>
@@ -205,12 +309,12 @@
                       </div>
                       <div>
                           <label for="email">Email</label>
-                          <input type="email" placeholder="Enter email e.g name@lastname.com" required name="email" id="email" value=""> 
+                          <input type="email" placeholder="Enter email e.g name@lastname.com"  name="email" id="email" value=""> 
                       </div>
       
                       <div>
                       <label for="age">Age</label>
-                      <input type="number" name="age" pattern="[0-9]*" id="age" value="" required>
+                      <input type="number" name="age"  id="age" value="" placeholder="Enter age between 0 and 120" >
                       </div>
                       <div>
            <button type="submit" class="ui-shadow ui-btn ui-corner-all">Submit </button>
@@ -221,6 +325,109 @@
                      
       
                   </form>
+              </div>
+          </div>
+      
+          <!-- Footer -->
+          <div data-role="footer" data-position="fixed" data-theme="a">
+              <div class="ui-bar">
+                  <p style="text-align: center;"> &copy; Jquery mobile design 2023</p>
+              </div>
+          </div>
+                </div>
+
+                  <!-- Form data -->
+
+            <div data-role="page" data-dom-cache="true" id="formData">
+                <!-- Header -->
+          <div data-role="header" class="header" data-position="fixed" data-theme="a">
+              <a href="#about"  data-transition="flow" style="background: transparent; box-shadow: none; border: none; "><img src="../images/bitcoin.png" alt="Logo" style="height: 28px;"></a>
+              <a href="#home" data-transition="flow" >COIT20269-Ass-1</a>
+              <a  data-icon="grid" id="menuButton2"  data-display="push"  data-iconpos="notext" class=" ui-btn-right ui-btn-icon-notext ui-icon-grid">Menu</a>
+          </div>
+      
+          <!-- Content -->
+          <div role="main" class="ui-content" id="content">
+              <div>
+              <h1 class="" style="text-align:center;font-size: 1.5rem;">Census Data</h1>
+              </div>
+              <div>
+            
+                <table data-role="table" id="table-column-toggle" data-mode="columntoggle" class="ui-responsive table-stroke">
+                     <thead>
+                       <tr>
+                         <th data-priority="2">First Name</th>
+                         <th data-priority="4">Last Name </th>
+                         <th data-priority="3">Email</th>
+                         <th data-priority="1">State</th>
+                         <th data-priority="5">Age</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                      
+                     
+                     </tbody>
+                   </table>
+                  
+              </div>
+          </div>
+      
+          <!-- Footer -->
+          <div data-role="footer" data-position="fixed" data-theme="a">
+              <div class="ui-bar">
+                  <p style="text-align: center;"> &copy; Jquery mobile design 2023</p>
+              </div>
+          </div>
+                </div>
+
+
+                <!-- Api Data -->
+                
+            <div data-role="page" data-dom-cache="true" id="apiData">
+                <!-- Header -->
+          <div data-role="header" class="header" data-position="fixed" data-theme="a">
+              <a href="#about"  data-transition="flow" style="background: transparent; box-shadow: none; border: none; "><img src="../images/bitcoin.png" alt="Logo" style="height: 28px;"></a>
+              <a href="#home" data-transition="flow" >COIT20269-Ass-1</a>
+              <a  data-icon="grid" id="menuButton2"  data-display="push"  data-iconpos="notext" class=" ui-btn-right ui-btn-icon-notext ui-icon-grid">Menu</a>
+          </div>
+      
+                    <!-- Content -->
+            <div role="main" class="ui-content" id="content">
+                <div>
+                <h1 class="" style="text-align:center;font-size: 1.5rem;">Api Data</h1>
+                </div>
+                <div id="apiResults">
+
+                </div>
+                <button id="fetchDataBtn" class="ui-btn ui-corner-all">Fetch Data</button>
+            </div>
+          <!-- Footer -->
+          <div data-role="footer" data-position="fixed" data-theme="a">
+              <div class="ui-bar">
+                  <p style="text-align: center;"> &copy; Jquery mobile design 2023</p>
+              </div>
+          </div>
+                </div>
+       
+
+                   <!-- Api Data -->
+                
+            <div data-role="page" data-dom-cache="true" id="studentChoice">
+                <!-- Header -->
+          <div data-role="header" class="header" data-position="fixed" data-theme="a">
+              <a href="#about"  data-transition="flow" style="background: transparent; box-shadow: none; border: none; "><img src="../images/bitcoin.png" alt="Logo" style="height: 28px;"></a>
+              <a href="#home" data-transition="flow" >COIT20269-Ass-1</a>
+              <a  data-icon="grid" id="menuButton2"  data-display="push"  data-iconpos="notext" class=" ui-btn-right ui-btn-icon-notext ui-icon-grid">Menu</a>
+          </div>
+      
+          <!-- Content -->
+          <div role="main" class="ui-content" id="content">
+              <div>
+              <h1 class="" style="text-align:center;font-size: 1.5rem;">Student Choice</h1>
+              </div>
+              <div>
+            
+               
               </div>
           </div>
       
