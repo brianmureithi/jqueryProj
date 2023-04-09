@@ -12,96 +12,26 @@
     <script src="../jquery/jquery.js"></script>
     <script src="../jquery/main.js"></script>
     <script src="../jquery/jquery.mobile-1.4.5.js"></script>
-    <script>
-        $(document).ready(function() {
-            /* trigger page create */
-            $(document).on("pagecontainershow", function(event, ui) {
-                var currentPage = $(':mobile-pagecontainer').pagecontainer('getActivePage');
-                console.log(currentPage.attr('id'))
-                if (currentPage.attr('id') == 'home') {
-                    $(document).trigger('home');
-                } else if (currentPage.attr('id') == 'about') {
-                    $(document).trigger('about');
-                } else if (currentPage.attr('id') == 'form') {
-                    $(document).trigger('form');
-                }
-            });
-            /* toggle and swipe panel */
-            $(document).on("pagecreate", function() {
-    $(document).on("swipeleft swiperight", function(e) {
-        if ($(".ui-page-active").jqmData("panel") !== "open") {
-            if (e.type === "swiperight") {
-                $("#menuPanel").panel("open");
-            } else if (e.type === "swipeleft") {
-                $("#menuPanel").panel("close");
-            }
-        }
-    });
-
-
-    $(document).on("click", "#menuButton, #menuButton1, #menuButton2", function() {
-        $("#menuPanel").panel();
-        $("#menuPanel").panel("toggle");
-    });
-
-    /* Form validation and submit */
-    let form = $('form')
-
-    let formDataArray=[]//Initialize
-    form.submit((e)=>{
-        e.preventDefault()
-
-        let first_name=$('#first_name')
-        let last_name=$('#last_name')
-        let state=$('#state')
-        let email=$('#email')
-        let age=$('#age')
-/* Validate age */
-        let ageValue=parseInt(age.val())
-        if(isNaN(ageValue) || ageValue<0 || ageValue >120){
-            alert('Please enter a valid age between 0 and 120')
-        }
-        let formData={
-            firstName:first_name.val(),
-            lastName:last_name.val(),
-            email:email.val(),
-            age:age.val(),
-            state:state.val()
-        }
-        /* Add the item to array */
-        formDataArray.push(formData);
-
-        localStorage.setItem('formDataArray', JSON.stringify(formDataArray))
-        /* Clear the form */
-        form[0].reset()
-        /* alert user */
-
-        alert('Form submitted successfully')
-        return false
-    })
-});
-
-        })
-    </script>
+ 
     
 
   
 
 </head>
 
-<body>
+<body data-default-page="home">
     <!-- Panel -->
        <!-- Menu panel -->
        <div data-role="panel" id="menuPanel" data-display="overlay" data-theme="a" data-dismissible="true" style="opacity: 0.9;" data-position-fixed="true" data-transition="fade">
-        <div class="logo-section">
-          <img src="../images/bitcoin.png" alt="Logo" style="height: 80px; margin-bottom: 6rem;">
-          <div class="nav-links">
+        <div class="">
+          <a href="#home" data-transition="flow"><img src="../images/bitcoin.png" alt="Logo" style="height: 80px; margin-bottom: 6rem;"></a>
+          <div class="">
             <ul>
               <li><a href="#about" data-transition="flow"> About Me <span><i class="fa fa-user"></i></span></a></li>
               <li><a href="#form" data-transition="flow"> Form <span><i class="fa fa-file-text-o"></i></span></a></li>
-              <li><a href="#" data-transition="flow"> Form Data <span><i class="fa fa-table"></i></span></a></li>
-              <li><a href="#" data-transition="flow"> Api Data <span><i class="fa fa-database"></i></span></a></li>
-              <li><a href="#" data-transition="flow"> Student Choice <span><i class="fa fa-plus-square-o"></i></span></a></li>
+              <li><a href="#formData" data-transition="flow"> Form Data <span><i class="fa fa-table"></i></span></a></li>
+              <li><a href="#apiData" data-transition="flow"> Api Data <span><i class="fa fa-database"></i></span></a></li>
+              <li><a href="#studentChoice" data-transition="flow"> Student Choice <span><i class="fa fa-plus-square-o"></i></span></a></li>
             </ul>
           </div>
         </div>
@@ -154,7 +84,14 @@
                     <p> The web is important because it connects people globally, facilitates information exchange, and enables online business, education, and entertainment.</p>
                   
                 </div>
-                <img src="../images/about.jpg" alt="Index image" class="image-c"/>
+               	
+<a href="#popup" data-rel="popup" data-position-to="window" data-transition="fade"><img class=" image-c popphoto" src="../images/about.jpg" alt="Me Image" style="width:100%"></a>
+              
+                
+<div data-role="popup" id="popup" data-overlay-theme="b" data-theme="b" data-corners="false">
+    <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+    <img class="popphoto" src="../images/about.jpg" style="max-height:512px;" alt="Me Image">
+</div>
             </div>
         </div>
         
@@ -185,16 +122,17 @@
                   <form>
                       <div>
                           <label for="first_name">First name</label>
-                          <input type="text" placeholder="First name" name="first_name" id="first_name" value="" required> 
+                          <input type="text" placeholder="First name" name="first_name" id="first_name" value="" > 
                       </div>
                       <div>
                           <label for="last_name-basic">Last name</label>
-                          <input type="text" name="last_name" id="last_name" placeholder='Enter last name'value="" required> 
+                          <input type="text" name="last_name" id="last_name" placeholder='Enter last name'value="" > 
                       </div>
                       <div>
                            
                       <label for="state" class="select">Chooose a state</label>
                       <select name="state" id="state">
+                          <option value="">Enter your state</option>
                           <option value="New South Wales">New South Wales</option>
                           <option value="Victoria">Victoria</option>
                           <option value="Queensland">Queensland</option>
@@ -205,12 +143,12 @@
                       </div>
                       <div>
                           <label for="email">Email</label>
-                          <input type="email" placeholder="Enter email e.g name@lastname.com" required name="email" id="email" value=""> 
+                          <input type="email" placeholder="Enter email e.g name@lastname.com"  name="email" id="email" value=""> 
                       </div>
       
                       <div>
                       <label for="age">Age</label>
-                      <input type="number" name="age" pattern="[0-9]*" id="age" value="" required>
+                      <input type="number" name="age"  id="age" value="" placeholder="Enter age between 0 and 120" >
                       </div>
                       <div>
            <button type="submit" class="ui-shadow ui-btn ui-corner-all">Submit </button>
@@ -231,8 +169,428 @@
               </div>
           </div>
                 </div>
+
+                  <!-- Form data -->
+
+            <div data-role="page" data-dom-cache="true" id="formData">
+                <!-- Header -->
+          <div data-role="header" class="header" data-position="fixed" data-theme="a">
+              <a href="#about"  data-transition="flow" style="background: transparent; box-shadow: none; border: none; "><img src="../images/bitcoin.png" alt="Logo" style="height: 28px;"></a>
+              <a href="#home" data-transition="flow" >COIT20269-Ass-1</a>
+              <a  data-icon="grid" id="menuButton2"  data-display="push"  data-iconpos="notext" class=" ui-btn-right ui-btn-icon-notext ui-icon-grid">Menu</a>
+          </div>
+      
+          <!-- Content -->
+          <div role="main" class="ui-content" id="content">
+              <div>
+              <h1 class="" style="text-align:center;font-size: 1.5rem;">Census Data</h1>
+              </div>
+              <div>
+            
+                <table data-role="table" id="table-column-toggle" data-mode="columntoggle" class="ui-responsive table-stroke">
+                     <thead>
+                       <tr>
+                         <th data-priority="1">First Name</th>
+                         <th data-priority="2">Last Name </th>
+                         <th data-priority="4">Email</th>
+                         <th data-priority="3">State</th>
+                         <th data-priority="5">Age</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                      
+                     
+                     </tbody>
+                   </table>
+                  
+              </div>
+          </div>
+      
+          <!-- Footer -->
+          <div data-role="footer" data-position="fixed" data-theme="a">
+              <div class="ui-bar">
+                  <p style="text-align: center;"> &copy; Jquery mobile design 2023</p>
+              </div>
+          </div>
+                </div>
+
+
+                <!-- Api Data -->
+                
+            <div data-role="page" data-dom-cache="true" id="apiData">
+                <!-- Header -->
+          <div data-role="header" class="header" data-position="fixed" data-theme="a">
+              <a href="#about"  data-transition="flow" style="background: transparent; box-shadow: none; border: none; "><img src="../images/bitcoin.png" alt="Logo" style="height: 28px;"></a>
+              <a href="#home" data-transition="flow" >COIT20269-Ass-1</a>
+              <a  data-icon="grid" id="menuButton2"  data-display="push"  data-iconpos="notext" class=" ui-btn-right ui-btn-icon-notext ui-icon-grid">Menu</a>
+          </div>
+      
+                    <!-- Content -->
+            <div role="main" class="ui-content" id="content">
+                <div>
+                <h1 class="" style="text-align:center;font-size: 1.5rem;">Api Data</h1>
+                </div>
+                <div id="apiResults">
+
+                </div>
+                <button id="fetchDataBtn" class="ui-btn ui-corner-all">Fetch Data</button>
+            </div>
+          <!-- Footer -->
+          <div data-role="footer" data-position="fixed" data-theme="a">
+              <div class="ui-bar">
+                  <p style="text-align: center;"> &copy; Jquery mobile design 2023</p>
+              </div>
+          </div>
+                </div>
        
 
+                   <!-- Student choice -->
+                
+            <div data-role="page" data-dom-cache="true" id="studentChoice">
+                <!-- Header -->
+          <div data-role="header" class="header" data-position="fixed" data-theme="a">
+              <a href="#about"  data-transition="flow" style="background: transparent; box-shadow: none; border: none; "><img src="../images/bitcoin.png" alt="Logo" style="height: 28px;"></a>
+              <a href="#home" data-transition="flow" >COIT20269-Ass-1</a>
+              <a  data-icon="grid" id="menuButton2"  data-display="push"  data-iconpos="notext" class=" ui-btn-right ui-btn-icon-notext ui-icon-grid">Menu</a>
+          </div>
+      
+          <!-- Content -->
+          <div role="main" class="ui-content" id="content">
+              <div>
+              <h1 class="" style="text-align:center;font-size: 1.5rem;">Student Grades</h1>
+              </div>
+              <div>
+                <div class="">
+                    <a href="#popuptwo" data-rel="popup" data-position-to="window" data-transition="fade"><img class="" 
+                        src="../images/student.jpg" alt="Me Image" style=" height:150px; width:150px;border-radius: 50%;"></a>
+              
+                
+<div data-role="popup" id="popuptwo" data-overlay-theme="b" data-theme="b" data-corners="false" style="background: rgba(255, 166, 0, 0.39);padding: 8px;">
+    <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+    <img class="popphoto" src="../images/student.jpg" style="max-height:512px; border-radius: 8%;" alt="Me Image">
+</div>
+                    
+                </div>
+                <div class="student-identity">
+                    <p>Brian Kasaveni</p>
+                    <p>Information Technology</p>
+                    <p>2023</p>
+                    <p>Semester 1</p>
+                </div>
+                <button id="addGradeBtn" class="ui-btn ui-corner-all">Add Grade</button>
+                <!-- Grade form -->
+                <form class="form-two">
+                    <p class="close-btn">x</p>
+                    <div  class="grade-form">
+                      
+                        <div>
+                            <label for="text-basic">Unit:</label>
+                            <input type="text" name="text-basic" id="unit-name" placeholder='Unit Name' value="">
+                                    </div>
+                                    <div>
+                            <label for="text-basic">Grade:</label>
+                            <input type="text" name="text-basic" id="grade" value="" placeholder='Grade'>
+                                    </div>
+                                    
+
+                    </div>
+                    <button id="submitGradeBtn" class="ui-btn ui-corner-all">Submit</button>
+                  
+
+
+                </form>
+                <div>
+                       
+                <table data-role="table" id="gradeList" data-mode="columntoggle" class="ui-responsive table-stroke">
+                    <thead>
+                      <tr>
+                        <th >Unit Name</th>
+                        <th >Grade Name </th>
+                         <th >Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                     
+                    
+                    </tbody>
+                  </table>
+                </div>
+
+            
+               
+              </div>
+          </div>
+      
+          <!-- Footer -->
+          <div data-role="footer" data-position="fixed" data-theme="a">
+              <div class="ui-bar">
+                  <p style="text-align: center;"> &copy; Jquery mobile design 2023</p>
+              </div>
+          </div>
+                </div>
+       
+                <script>
+                    $(document).ready(function() {
+                        //Initialize array
+                        let formDataArray = JSON.parse(localStorage.getItem("CensusData")) || [];  
+                       
+                      /* Reload the page once to initialize dom and ensure panel opens well before hash is set */
+                        function checkHashAndReload() {
+                            let hash=window.location.hash
+                            if (hash == "") {
+                                window.location.hash = "#home"
+                             sessionStorage.setItem("hasReloadedHome", null)
+                            let hasReloaded = sessionStorage.getItem("hasReloadedHome");
+                            if (hasReloaded == 'null') {
+                            // Set the session storage value to true to prevent infinite reloading
+                            sessionStorage.setItem("hasReloadedHome", true);
+                            location.reload(); 
+                            window.location.hash = "#home"
+                            }
+                            
+                            
+                        }
+                        }
+            
+                        window.onload = checkHashAndReload;
+                        window.addEventListener("hashchange", checkHashAndReload);
+                      /* trigger page create */
+                        $(document).on("pagebeforecreate", function(event, ui) {
+                            let currentPage = $(':mobile-pagecontainer').pagecontainer('getActivePage');
+                         
+            
+                              // check the URL hash value
+                               
+                                let hash = window.location.hash;
+                                if (hash === '#home' || currentPage.attr('id') == 'home') {
+                            /* trigger page to initialize dom */
+                                    $(document).trigger('home');
+                                } else if (hash === '#about' || currentPage.attr('id') == 'about') {
+                                    $(document).trigger('about');
+                                } else if (hash === '#form' || currentPage.attr('id') == 'form') {
+                                    $(document).trigger('form');
+                                }
+                        });
+                        /* toggle and swipe panel */
+                        $(document).on("pagecreate", function() {
+                            $(document).on("click", "#menuButton, #menuButton1, #menuButton2", function() {
+                    $("#menuPanel").panel();
+                    $("#menuPanel").panel("toggle");
+                });
+                $(document).on("swipeleft swiperight", function(e) {
+                    if ($(".ui-page-active").jqmData("panel") !== "open") {
+                        if (e.type === "swiperight") {
+                            /* iniialize panel */
+                            $("#menuPanel").panel();
+                            $("#menuPanel").panel("open");
+                        } else if (e.type === "swipeleft") {
+                            $("#menuPanel").panel();
+                            $("#menuPanel").panel("close");
+                        }
+                    }
+                });
+                /* Ensure the form is reset on navigation */
+                $("form")[0].reset();
+            
+             
+            
+                /* Form validation and submit */
+                let form = $('form')
+            
+            
+                form.submit((e)=>{
+                    e.preventDefault()
+            
+                    let first_name=$('#first_name')
+                    let last_name=$('#last_name')
+                    let state=$('#state')
+                    let email=$('#email')
+                    let age=$('#age')
+                     // Trim input values
+                let firstNameValue = $.trim(first_name.val());
+                let lastNameValue = $.trim(last_name.val());
+                let stateValue = $.trim(state.val());
+                let emailValue = $.trim(email.val());
+                let ageValue = parseInt($.trim(age.val()));
+                  // Check if any field is empty
+                  if (firstNameValue === '' || lastNameValue === '' || stateValue === '' || emailValue === '' || ageValue === '') {
+                    alert('Please fill all the required fields');
+                    return false;
+                }
+            
+            /* Validate age */
+                    if(isNaN(ageValue) || ageValue < 0 || ageValue > 120){
+                        alert('Please enter a valid age between 0 and 120')
+                    }
+                    let formData={
+                        firstName:firstNameValue,
+                        lastName:lastNameValue,
+                        email:emailValue,
+                        age:ageValue,
+                        state:stateValue
+                    }
+                    /* Add the item to array */
+                    formDataArray.push(formData);
+            
+                    localStorage.setItem('CensusData', JSON.stringify(formDataArray))
+                    /* Clear the form */
+                    form[0].reset()
+                    /* alert user */
+            
+                    alert('Form submitted successfully')
+                    return false
+                })
+            });
+            
+            /* Ensure the data is loaded when the page is created */
+            $(document).on("pagecreate", "#formData", function() {
+             
+              if (formDataArray !== null) {
+                let table = $('#table-column-toggle tbody');
+                $.each(formDataArray, function(index, person) {
+                  let row = $("<tr>");
+                  $("<td>").text(person.firstName).appendTo(row);
+                  $("<td>").text(person.lastName).appendTo(row);
+                  $("<td>").text(person.email).appendTo(row);
+                  $("<td>").text(person.state).appendTo(row);
+                  $("<td>").text(person.age).appendTo(row);
+                  table.append(row);
+                });
+              }
+            });
+            
+            /* Api scripts */
+            
+             // Set up event listener for the Fetch Data button
+             $('#fetchDataBtn').css({"background":"brown","color":"white"})
+             $('#fetchDataBtn').hover(
+                function() {
+                    $(this).css({"background":"red","color":"white"});
+                }, 
+                function() {
+                    $(this).css({"background":"brown", "color":"white"});
+                }
+            );
+             $('#fetchDataBtn').click(function() {
+                $.ajax({
+                  url: 'https://randomuser.me/api/',
+                  dataType: 'json',
+                  success: function(data) {
+                    // Extract the relevant data from the response
+                    let user = data.results[0];
+                    let firstName = user.name.first;
+                    let lastName = user.name.last;
+                    let country = user.location.country;
+                    let city = user.location.city;
+                    let imageSrc = user.picture.large;
+            
+                    // Create a new div to hold the data
+                    let newDiv = $('<div>').addClass('ui-body ui-body-a ui-corner-all').css("marginBottom","8px");
+            
+                    // Add the image
+                    let image = $('<img>').attr('src', imageSrc);
+                    newDiv.append(image);
+            
+                    // Add the name
+                    let name = $('<h2>').text(firstName + ' ' + lastName);
+                    newDiv.append(name);
+                    let countryName = $('<h3>').text(country);
+                    newDiv.append(countryName);
+                    let cityName = $('<h4>').text(city);
+                    newDiv.append(cityName);
+            
+                    // Add the new div to the results div
+                    $('#apiResults').append(newDiv);
+                  }
+                });
+              });
+            
+            
+              $('#submitGradeBtn').css({"background":"brown","color":"white"})
+              $('#addGradeBtn').css({"background":"green","color":"white"})
+              $('#submitGradeBtn').hover(
+                function() {
+                    $(this).css({"background":"red","color":"white"});
+                }, 
+                function() {
+                    $(this).css({"background":"brown", "color":"white"});
+                }
+            );
+            $('#addGradeBtn').hover(
+                function() {
+                    $(this).css({"background":"blue","color":"white"});
+                }, 
+                function() {
+                    $(this).css({"background":"green", "color":"white"});
+                }
+            );
+            
+            /* Hide form in initial load */
+            
+             $('.form-two').hide();
+              // toggle the form display when the Add Grade button is clicked
+              $('#addGradeBtn').on('click', function() {
+                $('.form-two').toggle();
+              });
+              // close the form when the close button is clicked
+              $('.close-btn').on('click', function() {
+                $('.form-two').hide();
+              });
+            
+              //function to add inputs
+                    function validateInputs() {
+                    let unitName = $('#unit-name').val();
+                    let grade = $('#grade').val();
+                    
+                    if (unitName.trim() === '' || grade.trim() === '') {
+                        alert('Please fill in all fields');
+                        return false;
+                    }
+                    
+                    return true;
+                    }
+                   
+                    /* Function to item to list */
+                    function addGradeToList(unitName, grade) {
+                  
+                    let tableRow = $('<tr>');
+                        $('<td>').text(unitName).appendTo(tableRow)
+                         $('<td>').text(grade).appendTo(tableRow);
+                        $('<td>').html('<button class="delete-btn">Delete</button>').appendTo(tableRow);
+                           
+                            return tableRow
+                       
+                          }
+            /* Submit form */
+                  $('#submitGradeBtn').click(function(e) {
+                        e.preventDefault();
+                        if (!validateInputs()) {
+                        return;
+                        }
+            
+                        let unitName = $('#unit-name').val();
+                        let grade = $('#grade').val();
+                        let tableRow=addGradeToList(unitName, grade);
+                        
+                        $('#gradeList tbody').append(tableRow.hide().fadeIn());
+            
+                        $('.form-two').hide();
+                        $('#unit-name').val('');
+                        $('#grade').val('');
+                    });
+            
+                    // Delete a grade from the list
+                    $(document).on('click', '.delete-btn', function() {
+                        let row = $(this).closest('tr');
+                        row.fadeOut(400, function() {
+                        row.remove();
+                        });
+                    });
+            
+            
+            
+                    })
+                </script>
    
     </body>
 
