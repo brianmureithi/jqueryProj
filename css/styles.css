@@ -18,7 +18,7 @@
     position: relative;
     margin: 6rem auto;
     width: 96%;
-    background-color: rgb(53, 51, 51);
+    background-color: rgba(17, 16, 16, 0.705);
     height: 40vh;
     border-radius: 8px;
     box-shadow: 0px 16px 12px rgba(0, 0, 0, 0.1), 0 6px 4px rgba(0, 0, 0, 0.1);
@@ -27,7 +27,7 @@
 .image-b{
     height: 40vh;
     width: 100%;
-    opacity: 0.3;
+    opacity: 0.1;
     object-fit: cover;
     object-position: center;
     border-radius: 8px;
@@ -79,12 +79,17 @@ justify-content: space-between;
         
 .welcome-text h1{
     color: rgb(255, 255, 255);
+    font-size: 3rem;
+    font-weight: 200;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .welcome-text h2{
-    color: rgb(201, 112, 11);
+    color: rgb(241, 135, 14);
+    font-size: 2rem;
+    font-weight: 500;
+    transition:  ease-in 3ms;
 }
-
 .about-container{
           
     position: relative;
@@ -130,4 +135,48 @@ justify-content: space-between;
     background: rgba(31, 30, 30, 0.295);
     padding: 8px 12px 2px 12px;
 }
+.student-identity{
+    border: #3333333a solid 1px;
+    padding: 10px 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    background-color: rgba(240, 255, 255, 0.541);
+   
+
+}
+.grade-form{
+    display: flex;
+ 
+    flex-direction: row;
+    justify-content: space-around;
+    row-gap: 13px;
+    padding: 10px 1rem;
+    
+}
+.grade-form > div{
+    flex-basis: auto;
+   margin-right: 10px;
+
+}
+.form-two{
+    background-color: rgba(240, 255, 255, 0.541);
+    border: #3333333a solid 1px;
+    padding: 10px 1rem;
+    position: relative;
+}
+.close-btn {
+    position: absolute;
+    top: 0;
+    right: 12px;
+
+  }
+  .close-btn:hover{
+    color: red;
+    cursor: pointer;
+  }
+  
+  
+
+
+
 
